@@ -1,0 +1,22 @@
+---
+---
+
+@use "main
+{%- if jekyll.environment == 'production' -%}
+  .bundle
+{%- endif -%}
+";
+
+#sidebar img {
+  filter: invert(1) !important;
+}
+
+html[data-mode="dark"] #sidebar img {
+  filter: none !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mode]) #sidebar img {
+    filter: none !important;
+  }
+}

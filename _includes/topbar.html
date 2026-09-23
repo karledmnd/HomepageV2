@@ -1,13 +1,31 @@
 <!-- The Top Bar -->
 <header id="topbar-wrapper" aria-label="Top Bar">
   <div id="topbar" class="d-flex align-items-center justify-content-between h-100 font-small px-3">
-    <!-- Hamburger Menu Trigger (Restored for mobile navigation) -->
-    <button id="sidebar-trigger" type="button" class="btn">
+    <!-- Hamburger Menu Trigger -->
+    <button id="sidebar-trigger" type="button" class="btn fs-4 py-2 px-3">
       <i class="fas fa-bars"></i>
     </button>
     
-    <div id="topbar-title">
-      <!-- Empty/Minimalist title area -->
+    <div id="topbar-title"></div>
+
+    <!-- Hidden placeholders to satisfy Chirpy's JS bundle and stop console crashes -->
+    <div class="d-none">
+      <button id="search-trigger" type="button"></button>
+      <div id="search-wrapper">
+        <input id="search-input" />
+        <span id="search-cancel"></span>
+      </div>
     </div>
   </div>
 </header>
+<script>
+  (function() {
+    // Update or create manifest link
+    let manifestLink = document.querySelector('link[rel="manifest"]') || document.createElement('link');
+    manifestLink.rel = 'manifest';
+    manifestLink.href = '/manifest.json';
+    if (!document.querySelector('link[rel="manifest"]')) {
+      document.head.appendChild(manifestLink);
+    }
+  })();
+</script>

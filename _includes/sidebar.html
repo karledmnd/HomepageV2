@@ -1,5 +1,32 @@
 <!-- The Side Bar -->
 
+<style>
+  /* CSS Fallbacks for Light and Dark Modes */
+  html[data-mode="light"] #sidebar #avatar img {
+    filter: brightness(0) !important;
+    -webkit-filter: brightness(0) !important;
+  }
+
+  html[data-mode="dark"] #sidebar #avatar img {
+    filter: none !important;
+    -webkit-filter: none !important;
+  }
+
+  @media (prefers-color-scheme: light) {
+    html:not([data-mode="dark"]) #sidebar #avatar img {
+      filter: brightness(0) !important;
+      -webkit-filter: brightness(0) !important;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    html:not([data-mode="light"]) #sidebar #avatar img {
+      filter: none !important;
+      -webkit-filter: none !important;
+    }
+  }
+</style>
+
 <aside aria-label="Sidebar" id="sidebar" class="d-flex flex-column align-items-end">
   <header class="profile-wrapper">
     <a href="{{ '/' | relative_url }}" id="avatar" class="rounded-circle">
@@ -132,3 +159,67 @@
   <!-- .sidebar-bottom -->
 </aside>
 <!-- #sidebar -->
+
+<script>
+  (function () {
+    function applyAvatarFilter() {
+      const img = document.querySelector('#sidebar #avatar img');
+      if (!img) return;
+
+      const sidebar = document.getElementById('sidebar') || document.body;
+      const bg = window.getComputedStyle(sidebar).backgroundColor;
+      
+      let isDark = true;
+
+      if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') {
+        const rgb = bg.match(/\d+/g);
+        if (rgb && rgb.length >= 3) {
+          const r = parseInt(rgb[0], 10);
+          const g = parseInt(rgb[1], 10);
+          const b = parseInt(rgb[2], 10);
+          const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+          isDark = brightness < 128;
+        }
+      } else {
+        const mode = document.documentElement.getAttribute('data-mode');
+        if (mode === 'light') {
+          isDark = false;
+        } else if (mode === 'dark') {
+          isDark = true;
+        } else {
+          isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+      }
+
+      if (isDark) {
+        img.style.setProperty('filter', 'none', 'important');
+        img.style.setProperty('-webkit-filter', 'none', 'important');
+      } else {
+        img.style.setProperty('filter', 'brightness(0)', 'important');
+        img.style.setProperty('-webkit-filter', 'brightness(0)', 'important');
+      }
+    }
+
+    applyAvatarFilter();
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', applyAvatarFilter);
+    }
+
+    window.addEventListener('load', applyAvatarFilter);
+
+    const observer = new MutationObserver(applyAvatarFilter);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      childList: true,
+      subtree: true
+    });
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyAvatarFilter);
+
+    const imgEl = document.querySelector('#sidebar #avatar img');
+    if (imgEl) {
+      imgEl.addEventListener('load', applyAvatarFilter);
+    }
+  })();
+</script>

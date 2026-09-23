@@ -13,10 +13,77 @@
     </div>
   </div>
 </footer>
+
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll("a.anchor").forEach(function(anchor) {
-      anchor.remove();
-    });
-  });
+  // Robust Live Clock, Unix Epoch, & Live ISS Telemetry Injector
+  (function() {
+    function injectWidgets() {
+      const targetArea = document.querySelector('.access') || document.querySelector('#panel-wrapper');
+      
+      if (targetArea) {
+        let widgetDiv = document.getElementById('global-nerd-widget');
+        if (!widgetDiv) {
+          widgetDiv = document.createElement('div');
+          widgetDiv.id = 'global-nerd-widget';
+          widgetDiv.className = 'px-3 py-3 mb-3 border-bottom';
+          targetArea.prepend(widgetDiv);
+        }
+        
+        widgetDiv.innerHTML = `
+          <p class="text-muted font-weight-bold mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Local Time & Telemetry</p>
+          <div id="global-live-clock" class="font-weight-bold mb-1" style="font-size: 1.15rem; font-family: monospace;">Loading...</div>
+          <div class="text-muted mb-2" style="font-size: 0.75rem; font-family: monospace; letter-spacing: 0.3px;">EPOCH: <span id="epoch-val">--</span></div>
+          <div class="p-2 rounded" id="iss-telemetry-box" style="font-size: 0.75rem; font-family: monospace; border: 1px dashed rgba(128,128,128,0.3);">
+            <div class="font-weight-bold mb-1" style="color: #38bdf8;">🛰️ ISS ORBIT TRACKER</div>
+            <div>LAT: <span id="iss-lat">fetching...</span></div>
+            <div>LON: <span id="iss-lon">fetching...</span></div>
+            <div>ALT: <span id="iss-alt">--</span> km</div>
+            <div>VEL: <span id="iss-vel">--</span> km/h</div>
+          </div>
+        `;
+        return true;
+      }
+      return false;
+    }
+
+    if (!injectWidgets()) {
+      const observer = new MutationObserver(function(mutations, obs) {
+        if (injectWidgets()) {
+          obs.disconnect();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    function updateWidgets() {
+      const now = new Date();
+      const clockElement = document.getElementById('global-live-clock');
+      if (clockElement) clockElement.textContent = now.toLocaleTimeString();
+      const epochElement = document.getElementById('epoch-val');
+      if (epochElement) epochElement.textContent = Math.floor(now.getTime() / 1000);
+    }
+    setInterval(updateWidgets, 1000);
+    updateWidgets();
+
+    async function fetchISSTelemetry() {
+      try {
+        const response = await fetch('https://api.wheretheiss.at/v1/satellites/25544');
+        const data = await response.json();
+        const latEl = document.getElementById('iss-lat');
+        const lonEl = document.getElementById('iss-lon');
+        const altEl = document.getElementById('iss-alt');
+        const velEl = document.getElementById('iss-vel');
+
+        if (latEl) latEl.textContent = data.latitude.toFixed(2);
+        if (lonEl) lonEl.textContent = data.longitude.toFixed(2);
+        if (altEl) altEl.textContent = Math.round(data.altitude);
+        if (velEl) velEl.textContent = Math.round(data.velocity).toLocaleString();
+      } catch (err) {
+        const issBox = document.getElementById('iss-lat');
+        if (issBox) issBox.textContent = 'API offline';
+      }
+    }
+    fetchISSTelemetry();
+    setInterval(fetchISSTelemetry, 10000);
+  })();
 </script>
