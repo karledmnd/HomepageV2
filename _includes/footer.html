@@ -1,0 +1,15 @@
+<!-- The Footer -->
+
+<footer class="aria-label="Site Info">
+  <div class="container font-xs text-muted d-flex justify-content-between flex-wrap flex-sm-nowrap flex-column flex-sm-row font-xs pt-4 pb-4">
+    <div>
+      <p class="mb-0">
+        © {{ 'now' | date: "%Y" }}
+        <a href="{{ site.social.links[0] | default: '/' }}">{{ site.social.name | default: site.title }}</a>.
+        {% if site.social.links %}
+          <span data-bs-toggle="tooltip" data-bs-placement="top" title="Except where otherwise noted, content on this site is licensed under CC BY 4.0.">All rights reserved.</span>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+</footer>
