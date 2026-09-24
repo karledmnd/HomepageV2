@@ -1,31 +1,141 @@
 <!-- The Top Bar -->
-<header id="topbar-wrapper" aria-label="Top Bar">
-  <div id="topbar" class="d-flex align-items-center justify-content-between h-100 font-small px-3">
-    <!-- Hamburger Menu Trigger -->
-    <button id="sidebar-trigger" type="button" class="btn fs-4 py-2 px-3">
-      <i class="fas fa-bars"></i>
-    </button>
-    
-    <div id="topbar-title"></div>
 
-    <!-- Hidden placeholders to satisfy Chirpy's JS bundle and stop console crashes -->
-    <div class="d-none">
-      <button id="search-trigger" type="button"></button>
-      <div id="search-wrapper">
-        <input id="search-input" />
-        <span id="search-cancel"></span>
-      </div>
+<style>
+  /* Mobile Styles (< 850px) */
+  @media (max-width: 849px) {
+    #topbar-wrapper {
+      padding-top: max(0.6rem, env(safe-area-inset-top, 0px)) !important;
+      padding-bottom: 0.5rem !important;
+      height: auto !important;
+    }
+
+    #topbar {
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      height: 2.75rem !important;
+    }
+
+    #topbar > nav {
+      display: none !important;
+    }
+
+    #search-trigger,
+    search,
+    #search-cancel {
+      display: none !important;
+    }
+
+    #topbar-title {
+      display: block !important;
+      text-align: center !important;
+      flex: 1 1 auto !important;
+      margin-left: 0 !important;
+      margin-right: 2.5rem !important;
+      font-weight: 600;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+
+    #sidebar-trigger {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 2.5rem !important;
+      height: 2.5rem !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+  }
+
+  /* Desktop Styles (>= 850px) */
+  @media (min-width: 850px) {
+    /* Hide topbar title & breadcrumb span to eliminate redundant small site title text */
+    #topbar-title {
+      display: none !important;
+    }
+
+    #topbar nav span {
+      display: none !important;
+    }
+
+    /* Hide mobile triggers on desktop */
+    #sidebar-trigger,
+    #search-trigger,
+    #search-cancel {
+      display: none !important;
+    }
+
+    /* Expand search bar width to 20rem to align perfectly over right panel */
+    #topbar search {
+      display: flex !important;
+      margin-left: auto !important;
+      margin-right: 0 !important;
+      width: 20rem !important;
+      max-width: 100% !important;
+    }
+  }
+</style>
+
+<header id="topbar-wrapper" aria-label="Top Bar">
+  <div id="topbar" class="d-flex align-items-center justify-content-between h-100">
+    <nav aria-label="Breadcrumb">
+      <!-- index page -->
+      {% if page.layout == 'home' or page.layout == 'about' %}
+        <!-- Hidden on home/about -->
+      {% else %}
+        <!-- other pages breadcrumbs -->
+        {% assign paths = page.url | split: '/' %}
+        {% assign path_length = paths | size %}
+
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ '/' | relative_url }}">{{ site.data.locales[include.lang].panel.home }}</a></li>
+
+          {% for path in paths offset: 1 %}
+            {% if forloop.last %}
+              <li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+            {% else %}
+              <li class="breadcrumb-item"><a href="{{ path | append: '/' | relative_url }}">{{ path }}</a></li>
+            {% endif %}
+          {% endfor %}
+        </ol>
+      {% endif %}
+    </nav>
+    <!-- .breadcrumb -->
+
+    <button type="button" id="sidebar-trigger" class="btn btn-link">
+      <i class="fas fa-bars fa-fw"></i>
+    </button>
+
+    <div id="topbar-title">
+      {% if page.layout == 'home' %}
+        {{- site.title -}}
+      {% elsif page.layout == 'about' %}
+        {{- site.data.locales[include.lang].tabs.about | capitalize -}}
+      {% else %}
+        {{- page.title -}}
+      {% endif %}
     </div>
+
+    <button type="button" id="search-trigger" class="btn btn-link">
+      <i class="fas fa-search fa-fw"></i>
+    </button>
+
+    <search class="align-items-center ms-3 me-lg-1">
+      <i class="fas fa-search fa-fw"></i>
+      <input
+        class="form-control"
+        id="search-input"
+        type="search"
+        aria-label="search"
+        placeholder="{{ site.data.locales[include.lang].search.hint }}..."
+      >
+    </search>
+    <button type="button" id="search-cancel" class="btn btn-link">{{ site.data.locales[include.lang].search.cancel }}</button>
   </div>
 </header>
-<script>
-  (function() {
-    // Update or create manifest link
-    let manifestLink = document.querySelector('link[rel="manifest"]') || document.createElement('link');
-    manifestLink.rel = 'manifest';
-    manifestLink.href = '/manifest.json';
-    if (!document.querySelector('link[rel="manifest"]')) {
-      document.head.appendChild(manifestLink);
-    }
-  })();
-</script>
