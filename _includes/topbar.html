@@ -1,6 +1,24 @@
 <!-- The Top Bar -->
 
 <style>
+  /* Hide heading anchor links (# hashtags next to titles) */
+  .content h1 .anchor,
+  .content h2 .anchor,
+  .content h3 .anchor,
+  .content h4 .anchor,
+  .content h5 .anchor,
+  .content h6 .anchor,
+  a.anchor,
+  .anchor-link,
+  .heading-link {
+    display: none !important;
+  }
+
+  /* Completely hide breadcrumb navigation path (/ Projects, / About, etc.) */
+  #topbar > nav {
+    display: none !important;
+  }
+
   /* Mobile Styles (< 850px) */
   @media (max-width: 849px) {
     #topbar-wrapper {
@@ -16,10 +34,6 @@
       align-items: center !important;
       justify-content: space-between !important;
       height: 2.75rem !important;
-    }
-
-    #topbar > nav {
-      display: none !important;
     }
 
     #search-trigger,
@@ -55,23 +69,16 @@
 
   /* Desktop Styles (>= 850px) */
   @media (min-width: 850px) {
-    /* Hide topbar title & breadcrumb span to eliminate redundant small site title text */
     #topbar-title {
       display: none !important;
     }
 
-    #topbar nav span {
-      display: none !important;
-    }
-
-    /* Hide mobile triggers on desktop */
     #sidebar-trigger,
     #search-trigger,
     #search-cancel {
       display: none !important;
     }
 
-    /* Expand search bar width to 20rem to align perfectly over right panel */
     #topbar search {
       display: flex !important;
       margin-left: auto !important;
@@ -87,7 +94,7 @@
     <nav aria-label="Breadcrumb">
       <!-- index page -->
       {% if page.layout == 'home' or page.layout == 'about' %}
-        <!-- Hidden on home/about -->
+        <!-- Hidden -->
       {% else %}
         <!-- other pages breadcrumbs -->
         {% assign paths = page.url | split: '/' %}
