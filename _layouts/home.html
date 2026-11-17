@@ -102,6 +102,38 @@ refactor: true
     margin-top: 4px;
     margin-bottom: 0;
   }
+
+  /* Roadmap post link button */
+  .roadmap-post-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 8px 18px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background-color: #27c93f;
+    border: 1px solid #27c93f !important;
+    color: #0b0b0b !important;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .roadmap-post-btn:hover,
+  .roadmap-post-btn:focus-visible {
+    background-color: #32d74b;
+    box-shadow: 0 0 12px rgba(39, 201, 63, 0.45);
+  }
+
+  @media (max-width: 576px) {
+    .roadmap-post-btn {
+      display: flex;
+      width: 100%;
+    }
+  }
 </style>
 
 <!-- Top Header Section -->
@@ -116,6 +148,11 @@ refactor: true
 <div class="roadmap-card">
   <h2 class="mt-0 mb-1" style="font-size: 1.35rem;">🎯 Latest Project Roadmap</h2>
   <p class="text-muted mb-4" style="font-size: 0.95rem; font-weight: 500;">Baja Buggy Datalogger</p>
+
+  <a class="roadmap-post-btn" href="{{ '/posts/baja-buggy-datalogger/' | relative_url }}">
+    Read the project post
+    <i class="fas fa-arrow-right" aria-hidden="true"></i>
+  </a>
 
   <div class="roadmap-container">
 
